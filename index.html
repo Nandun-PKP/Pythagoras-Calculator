@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Pythagoras Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #cc0000;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .triangle-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            border: 2px solid #cc0000;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .triangle {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-bottom: 150px solid #cc0000;
+            border-right: 150px solid transparent;
+        }
+
+        .a, .b, .c {
+            position: absolute;
+            color: black;
+            font-weight: bold;
+        }
+
+        .a { bottom: 2px; left: 70px; }
+        .b { left: 4px; top: 75px; }
+        .c { top: 75px; left: 100px; transform: rotate(45deg); }
+
+        .x {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .input-group, .formula, .buttons {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            width: 30%;
+            min-width: 250px;
+        }
+
+        .input-group label {
+            margin-right: 10px;
+            width: 50px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .formula {
+            font-size: 1.4em;
+            font-style: italic;
+            color: black;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            min-width: 100px;
+            font-size: 16px;
+            background-color: #cc0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #a00000;
+        }
+
+        #solution {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 20px auto;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-area" class="login-container">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="loginUsername">Username:</label>
+            <input type="text" id="loginUsername" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="password" required>
+        </div>
+        <button onclick="login()">Login</button>
+        <p id="loginMessage"></p>
+        <p>Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+    </div>
+
+    <div id="register-area" class="login-container hidden">
+        <h2>Register</h2>
+        <div class="form-group">
+            <label for="registerUsername">Username:</label>
+            <input type="text" id="registerUsername" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="registerPassword">Password:</label>
+            <input type="password" id="registerPassword" name="password" required>
+        </div>
+        <button onclick="register()">Register</button>
+        <p id="registerMessage"></p>
+        <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    </div>
+
+    <div id="calculator-area" class="calculator-container hidden">
+        <h1>Pythagoras Calculator  </h1>
+        <p>This program calculates the hypotenuse or one of the sides of a right triangle using the Pythagoras theorem.  </p>
+
+        <div class="triangle-container">
+            <div class="triangle"></div>
+            <div class="a">a </div>
+            <div class="b">b </div>
+            <div class="c">c </div>
+        </div>
+
+        <div class="input-container"><br>
+            <p>Fill 2 known side values and leave the third one empty. Click the "Calculate" button to find the missing side.</p>
+            <div class="x">
+                <div class="input-group">
+                    <label for="a">a  =</label>
+                    <input type="number" id="a" placeholder="Enter side a value" />
+                </div>
+
+                <div class="input-group">
+                    <label for="b">b  =</label>
+                    <input type="number" id="b" placeholder="Enter side b value" />
+                </div>
+
+                <div class="input-group">
+                    <label for="c">c  =</label>
+                    <input type="number" id="c" placeholder="Enter side c value" />
+                </div>
+
+                <div class="formula">a² + b² = c² </div>
+
+                <div class="buttons">
+                    <button onclick="calculate()">Calculate </button>
+                    <button onclick="resetFields()">Reset </button>
+                </div>
+
+                
+            </div>
+        </div>
+        <p id="solution"></p>
+        <button onclick="logout()" style="background-color: #dc3545; color: white; margin-top: 20px;">Logout</button>
+        <p id="protectedMessage"></p>
+    </div>
+
+    <script>
+        const loginArea = document.getElementById('login-area');
+        const registerArea = document.getElementById('register-area');
+        const calculatorArea = document.getElementById('calculator-area');
+        const loginMessage = document.getElementById('loginMessage');
+        const registerMessage = document.getElementById('registerMessage');
+        const protectedMessage = document.getElementById('protectedMessage');
+
+        function showRegister() {
+            loginArea.classList.add('hidden');
+            registerArea.classList.remove('hidden');
+        }
+
+        function showLogin() {
+            registerArea.classList.add('hidden');
+            loginArea.classList.remove('hidden');
+        }
+
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => response.text())
+            .then(data => {
+                registerMessage.textContent = data;
+                if (data === 'Registration successful!') {
+                    showLogin();
+                }
+            })
+            .catch(error => {
+                registerMessage.textContent = 'Registration failed: ' + error;
+            });
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loginArea.classList.add('hidden');
+                    calculatorArea.classList.remove('hidden'); 
+                    protectedMessage.textContent = data.message;
+                } else {
+                    loginMessage.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                loginMessage.textContent = 'Login failed: ' + error;
+            });
+        }
+
+        function logout() {
+            fetch('/logout')
+            .then(response => response.text())
+            .then(data => {
+                calculatorArea.classList.add('hidden');
+                loginArea.classList.remove('hidden');
+                protectedMessage.textContent = '';
+                loginMessage.textContent = data;
+            })
+            .catch(error => {
+                loginMessage.textContent = 'Logout failed: ' + error;
+            });
+        }
+
+        function calculate() {
+            const sideA = parseFloat(document.getElementById("a").value);
+            const sideB = parseFloat(document.getElementById("b").value);
+            const sideC = parseFloat(document.getElementById("c").value);
+            const solution = document.getElementById("solution");
+
+            let filledCount = 0;
+            if (!isNaN(sideA)) filledCount++;
+            if (!isNaN(sideB)) filledCount++;
+            if (!isNaN(sideC)) filledCount++;
+
+            if (filledCount !== 2) {
+                solution.textContent = "Please fill exactly 2 values to calculate the third side.  ";
+                return;
+            }
+
+            if (isNaN(sideA)) {
+                if (sideC <= sideB) {
+                    solution.textContent = "The hypotenuse (c) must be greater than side b.  ";
+                    return;
+                }
+                const a = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideB, 2));
+                document.getElementById("a").value = a.toFixed(2);
+                solution.textContent = `Side a = ${a.toFixed(2)}`;
+            } else if (isNaN(sideB)) {
+                if (sideC <= sideA) {
+                    solution.textContent = "The hypotenuse (c) must be greater than side a.  ";
+                    return;
+                }
+                const b = Math.sqrt(Math.pow(sideC, 2) - Math.pow(sideA, 2));
+                document.getElementById("b").value = b.toFixed(2);
+                solution.textContent = `Side b = ${b.toFixed(2)}`;
+            } else {
+                const c = Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
+                document.getElementById("c").value = c.toFixed(2);
+                solution.textContent = `Hypotenuse c = ${c.toFixed(2)}`;
+            }
+        }
+
+        function resetFields() {
+            document.getElementById("a").value = '';
+            document.getElementById("b").value = '';
+            document.getElementById("c").value = '';
+            document.getElementById("solution").textContent = '';
+        }
+
+        // පිටුව පූරණය වීමේදී ලොගින් තත්ත්වය පරීක්ෂා කරන්න (සරල UI වෙනස් කිරීමක් පමණි)
+        // සැබෑ ආරක්ෂාව සර්වර් පැත්තේ සිදු කළ යුතුය
+        if (sessionStorage.getItem('loggedIn')) {
+            loginArea.classList.add('hidden');
+            calculatorArea.classList.remove('hidden');
+        } else {
+            loginArea.classList.remove('hidden');
+            calculatorArea.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

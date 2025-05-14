@@ -1,0 +1,15 @@
+{
+  "name": "pythagoras-login-server",
+  "version": "1.0.0",
+  "description": "Server for Pythagoras Calculator with Login",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "sqlite3": "^5.0.2",
+    "body-parser": "^1.19.0",
+    "express-session": "^1.17.1"
+  }
+}
